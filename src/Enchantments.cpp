@@ -887,9 +887,8 @@ void cEnchantments::AddEnchantmentWeightToVector(cWeightedEnchantments & a_Encha
 {
 	cWeightedEnchantment weightedenchantment;
 	weightedenchantment.m_Weight = a_Weight;
-	cEnchantments enchantment;
-	enchantment.SetLevel(a_EnchantmentID, a_EnchantmentLevel);
-	weightedenchantment.m_Enchantments = enchantment;
+	weightedenchantment.m_EnchantmentID = a_EnchantmentID;
+	weightedenchantment.m_EnchantmentLevel = a_EnchantmentLevel;
 	a_Enchantments.push_back(weightedenchantment);
 }
 
@@ -901,7 +900,7 @@ void cEnchantments::RemoveEnchantmentWeightFromVector(cWeightedEnchantments & a_
 {
 	for (cWeightedEnchantments::iterator it = a_Enchantments.begin(); it != a_Enchantments.end(); ++it)
 	{
-		if ((*it).m_Enchantments.GetLevel(a_EnchantmentID) > 0)
+		if ((*it).m_EnchantmentID == a_EnchantmentID)
 		{
 			a_Enchantments.erase(it);
 			break;
@@ -917,7 +916,7 @@ void cEnchantments::RemoveEnchantmentWeightFromVector(cWeightedEnchantments & a_
 {
 	for (cWeightedEnchantments::iterator it = a_Enchantments.begin(); it != a_Enchantments.end(); ++it)
 	{
-		if ((*it).m_Enchantments == a_Enchantment)
+		if (a_Enchantment.GetLevel((*it).m_EnchantmentID))
 		{
 			a_Enchantments.erase(it);
 			break;
@@ -1000,7 +999,9 @@ cEnchantments cEnchantments::GetRandomEnchantmentFromVector(cWeightedEnchantment
 		RandomNumber -= (*it).m_Weight;
 		if (RandomNumber < 0)
 		{
-			return (*it).m_Enchantments;
+			cEnchantments enchantment;
+			enchantment.SetLevel((*it).m_EnchantmentID, (*it).m_EnchantmentLevel);
+			return enchantment;
 		}
 	}
 

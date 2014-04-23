@@ -149,7 +149,8 @@ protected:
 struct cWeightedEnchantment
 {
 	int m_Weight;
-	cEnchantments m_Enchantments;
+	int m_EnchantmentID;
+	int m_EnchantmentLevel;
 };
 
 
