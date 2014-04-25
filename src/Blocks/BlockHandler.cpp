@@ -6,6 +6,7 @@
 #include "../Root.h"
 #include "../Bindings/PluginManager.h"
 #include "../Chunk.h"
+#include "../Enchantments.h"
 #include "BlockAnvil.h"
 #include "BlockBed.h"
 #include "BlockBigFlower.h"
@@ -355,7 +356,30 @@ void cBlockHandler::DropBlock(cChunkInterface & a_ChunkInterface, cWorldInterfac
 {
 	cItems Pickups;
 	NIBBLETYPE Meta = a_ChunkInterface.GetBlockMeta(a_BlockX, a_BlockY, a_BlockZ);
-	ConvertToPickups(Pickups, Meta);
+
+	// Check for Silktouch Enchantment
+	cEnchantments Enchantments = a_Digger->GetEquippedWeapon().m_Enchantments;
+	if (Enchantments.GetLevel(cEnchantments::enchSilkTouch) > 0)
+	{
+		BLOCKTYPE Type = a_ChunkInterface.GetBlock(a_BlockX, a_BlockY, a_BlockZ);
+		if (Type == E_BLOCK_CAKE || Type == E_BLOCK_CARROTS || Type == E_BLOCK_COCOA_POD || Type == E_BLOCK_DOUBLE_STONE_SLAB ||
+			Type == E_BLOCK_DOUBLE_WOODEN_SLAB || Type == E_BLOCK_FIRE || Type == E_BLOCK_FARMLAND || Type == E_BLOCK_MELON_STEM ||
+			Type == E_BLOCK_MOB_SPAWNER || Type == E_BLOCK_NETHER_WART || Type == E_BLOCK_POTATOES || Type == E_BLOCK_PUMPKIN_STEM ||
+			Type == E_BLOCK_SNOW || Type == E_BLOCK_SUGARCANE || Type == E_BLOCK_TALL_GRASS || Type == E_BLOCK_CROPS
+			)
+		{
+			// Silktouch can't be used for this blocks
+			ConvertToPickups(Pickups, Meta);
+		}
+		else
+		{
+			Pickups.push_back(cItem(m_BlockType));
+		}
+	}
+	else
+	{
+		ConvertToPickups(Pickups, Meta);
+	}
 	
 	// Allow plugins to modify the pickups:
 	a_BlockPluginInterface.CallHookBlockToPickups(a_Digger, a_BlockX, a_BlockY, a_BlockZ, m_BlockType, Meta, Pickups);
