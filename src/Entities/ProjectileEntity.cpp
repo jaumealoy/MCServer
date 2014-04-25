@@ -505,6 +505,14 @@ void cArrowEntity::OnHitEntity(cEntity & a_EntityHit, const Vector3d & a_HitPos)
 	{
 		Damage += m_World->GetTickRandomNumber(Damage / 2 + 2);
 	}
+
+	int PowerLevel = GetEquippedWeapon().m_Enchantments.GetLevel(cEnchantments::enchPower);
+	if (PowerLevel > 0)
+	{
+		int ExtraDamage = 0.25 * (PowerLevel + 1);
+		Damage += ceil(ExtraDamage);
+	}
+
 	a_EntityHit.TakeDamage(dtRangedAttack, this, Damage, 1);
 	
 	// Broadcast successful hit sound
