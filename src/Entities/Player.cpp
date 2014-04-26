@@ -15,6 +15,7 @@
 #include "../Chunk.h"
 #include "../Items/ItemHandler.h"
 #include "../Vector3.h"
+#include "../FastRandom.h"
 
 #include "inifile/iniFile.h"
 #include "json/json.h"
@@ -1727,6 +1728,27 @@ void cPlayer::UseEquippedItem(void)
 	if (IsGameModeCreative()) // No damage in creative
 	{
 		return;
+	}
+
+	cItem Item = GetEquippedItem();
+	int UnbreakingLevel = Item.m_Enchantments.GetLevel(cEnchantments::enchUnbreaking);
+	if (UnbreakingLevel > 0)
+	{
+		int chance;
+		if (ItemCategory::IsArmor(Item.m_ItemType))
+		{
+			chance = 60 + (40 / (UnbreakingLevel + 1));
+		}
+		else
+		{
+			chance = 100 / (UnbreakingLevel + 1);
+		}
+
+		cFastRandom Random;
+		if (Random.NextInt(100) <= chance)
+		{
+			return;
+		}
 	}
 
 	if (GetInventory().DamageEquippedItem())
