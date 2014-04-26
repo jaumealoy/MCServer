@@ -486,6 +486,12 @@ void cArrowEntity::OnHitSolidBlock(const Vector3d & a_HitPos, eBlockFace a_HitFa
 
 	// Broadcast arrow hit sound
 	m_World->BroadcastSoundEffect("random.bowhit", (int)GetPosX() * 8, (int)GetPosY() * 8, (int)GetPosZ() * 8, 0.5f, (float)(0.75 + ((float)((GetUniqueID() * 23) % 32)) / 64));
+
+	if ((m_World->GetBlock(a_X, a_Y, a_Z) == E_BLOCK_TNT) && (m_Creator->GetEquippedWeapon().m_Enchantments.GetLevel(cEnchantments::enchFlame) > 0))
+	{
+		m_World->SetBlock(a_X, a_Y, a_Z, E_BLOCK_AIR, 0);
+		m_World->SpawnPrimedTNT(a_X, a_Y, a_Z);
+	}
 }
 
 
@@ -514,6 +520,11 @@ void cArrowEntity::OnHitEntity(cEntity & a_EntityHit, const Vector3d & a_HitPos)
 	}
 
 	a_EntityHit.TakeDamage(dtRangedAttack, this, Damage, 1);
+
+	if (m_TicksLeftBurning > 0)
+	{
+		a_EntityHit.StartBurning(BURN_TICKS);
+	}
 	
 	// Broadcast successful hit sound
 	m_World->BroadcastSoundEffect("random.successful_hit", (int)GetPosX() * 8, (int)GetPosY() * 8, (int)GetPosZ() * 8, 0.5, (float)(0.75 + ((float)((GetUniqueID() * 23) % 32)) / 64));
