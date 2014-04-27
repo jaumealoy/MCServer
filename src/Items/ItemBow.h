@@ -95,7 +95,7 @@ public:
 				return;
 			}
 
-			int ArrowFound = false;
+			bool ArrowFound = false;
 			// First search in the hotbar
 			for (int i = 0; i < 9; i++)
 			{
