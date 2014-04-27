@@ -59,7 +59,13 @@ public:
 		{
 			Force = 1;
 		}
-		
+
+		// Before create the arrow entity, check if a arrow is in the inventory of the player
+		if (!a_Player->GetInventory().HasItems(cItem(E_ITEM_ARROW)) && !a_Player->IsGameModeCreative())
+		{
+			return;
+		}
+
 		// Create the arrow entity:
 		cArrowEntity * Arrow = new cArrowEntity(*a_Player, Force * 2);
 		if (Arrow == NULL)
@@ -83,6 +89,35 @@ public:
 		if (!a_Player->IsGameModeCreative())
 		{
 			a_Player->UseEquippedItem();
+
+			int ArrowFound = false;
+			// First search in the hotbar
+			for (int i = 0; i < 9; i++)
+			{
+				if (a_Player->GetInventory().GetHotbarSlot(i).m_ItemType == E_ITEM_ARROW)
+				{
+					ArrowFound = true;
+					cItem Item = a_Player->GetInventory().GetHotbarSlot(i);
+					Item.m_ItemCount -= 1;
+					a_Player->GetInventory().SetHotbarSlot(i, Item);
+					break;
+				}
+			}
+
+			if (!ArrowFound)
+			{
+				// No item found in the hotbar, search in the inventory
+				for (int i = 0; i < 27; i++)
+				{
+					if (a_Player->GetInventory().GetInventorySlot(i).m_ItemType == E_ITEM_ARROW)
+					{
+						cItem Item = a_Player->GetInventory().GetInventorySlot(i);
+						Item.m_ItemCount -= 1;
+						a_Player->GetInventory().SetInventorySlot(i, Item);
+						break;
+					}
+				}
+			}
 		}
 	}
 } ;
