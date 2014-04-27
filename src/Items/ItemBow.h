@@ -90,6 +90,11 @@ public:
 		{
 			a_Player->UseEquippedItem();
 
+			if (a_Player->GetEquippedItem().m_Enchantments.GetLevel(cEnchantments::enchInfinity) > 0)
+			{
+				return;
+			}
+
 			int ArrowFound = false;
 			// First search in the hotbar
 			for (int i = 0; i < 9; i++)
