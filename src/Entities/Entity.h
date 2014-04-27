@@ -270,6 +270,9 @@ public:
 	/// Returns the hitpoints that this pawn can deal to a_Receiver using its equipped items
 	virtual int GetRawDamageAgainst(const cEntity & a_Receiver);
 	
+	/** Returns whether armor will protect against the passed damage type **/
+	virtual bool ArmorCoversAgainst(eDamageType a_DamageType);
+	
 	/// Returns the hitpoints out of a_RawDamage that the currently equipped armor would cover
 	virtual int GetArmorCoverAgainst(const cEntity * a_Attacker, eDamageType a_DamageType, int a_RawDamage);
 	
@@ -328,6 +331,11 @@ public:
 	void SetMaxHealth(int a_MaxHealth);
 
 	int GetMaxHealth(void) const { return m_MaxHealth; }
+	
+	/// Sets whether the entity is fireproof
+	void SetIsFireproof(bool a_IsFireproof);
+	
+	bool IsFireproof(void) const { return m_IsFireproof; }
 	
 	/// Puts the entity on fire for the specified amount of ticks
 	void StartBurning(int a_TicksLeftBurning);
